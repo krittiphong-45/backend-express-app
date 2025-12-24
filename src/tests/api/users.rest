@@ -1,0 +1,17 @@
+###get request to read all users
+GET http://localhost:3000/users
+
+
+
+
+### POST
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "name":"krit",
+  "email":"krit@example.com"
+}
+
+### Delete requst todulete a user
+DELETE http://localhost:3000/users/3
