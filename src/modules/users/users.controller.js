@@ -1,4 +1,5 @@
 import { users } from "../../mock-db/users.js";
+import { User } from "./users.model.js";
 
 export const testAPI = (req, res) => {
   res.send(`
@@ -34,29 +35,48 @@ export const testAPI = (req, res) => {
   </html>`)
 };
 
-export const getUsers = (req, res) => {
+//❌ route handler:get all users (mork)
+export const getUsers2 = (req, res) => {
   res.status(200).json(users);
 };
+
+//✅ route handler: get all users from the database
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+
+    return res.status(200).json({
+      success: true,
+      data: users
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: "Failed to get users...",
+    });
+  }
+}
 
 export const deleteUser = (req, res) => {
   const userId = req.params.id;
 
   const userIndex = users.findIndex((user) => user.id === userId);
 
-  if(userIndex !== -1){
+  if (userIndex !== -1) {
     users.splice(userIndex, 1);
 
     res.status(200).send(`User with ID ${userId} deleted ✅`);
-  }else{
+  } else {
     res.status(404).send(`User not found.`);
   }
 };
 
-export const createUser = (req, res) => {
+//❌ route handler: create a new user (mork)
+export const createUser2 = (req, res) => {
   const { name, email } = req.body
 
   const newUser = {
-    id:String(users.length + 1),
+    id: String(users.length + 1),
     name: name,
     email: email,
   };
@@ -66,3 +86,39 @@ export const createUser = (req, res) => {
   res.status(201).json(newUser);
 
 };
+
+//✅ route handler: create a new user in the database
+export const createUser = async (req, res) => {
+  const { username, email, password } = req.body
+
+  if (!username || !email || !password) {
+    return res.status(404).json({
+      success: false,
+      error: "username, email, and password are required",
+    });
+  }
+
+  try {
+    const doc = await User.create({ username, email, password });
+
+    const safe = doc.toObject()
+    delete safe.password
+
+    return res.status(201).json({
+      success: true,
+      data: safe
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        error: "Email already in use!",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to create user...",
+    });
+  }
+}
