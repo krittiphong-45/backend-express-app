@@ -121,12 +121,12 @@ export const createUser2 = async (req, res) => {
   try {
     const doc = await User.create({ username, email, password, role });
 
-    const safe = doc.toObject()
-    delete safe.password
+    const safe = doc.toObject();
+    delete safe.password;
 
     return res.status(201).json({
       success: true,
-      data: safe
+      data: safe,
     });
   } catch (error) {
     if (error.code === 11000) {
