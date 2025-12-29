@@ -11,7 +11,7 @@ const corsOptions = {
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",
-    "https://frontend-react-app-chi.vercel.app/"
+    "https://frontend-react-app-chi.vercel.app"
   ],
 };
 
