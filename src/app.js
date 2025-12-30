@@ -21,3 +21,23 @@ app.use(express.json());
 
 app.use("/api", apiRoutes);
 
+// catch-all for 404 Not Found
+app.use((req, res, next) => {
+  const error = new Error(`Not foud: ${req.method} ${req.originalUrl}`)
+  error.name = "NotFoundError"
+  error.status = 404
+  next(error)
+})
+
+// Centralized Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    succes: false,
+    message: err.message || "Internal Server Error",
+    path: req.originalUrl,
+    method: req.method,
+    timestamp: new Data().toISOString(),
+    stack: err.stack,
+  });
+})
