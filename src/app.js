@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
     message: err.message || "Internal Server Error",
     path: req.originalUrl,
     method: req.method,
-    timestamp: new Data().toISOString(),
+    timestamp: new Date().toISOString(),
     stack: err.stack,
   });
 })
