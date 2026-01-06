@@ -1,18 +1,38 @@
 ###get request to read all users
-GET http://localhost:3000/api/v1/users
+GET http://localhost:3000/api/v2/users
 
 
 
 
 ### POST
-POST http://localhost:3000/api/v1/users
+POST http://localhost:3000/api/v2/users
 Content-Type: application/json
 
 {
   "username":"Alice",
-  "email":"alice@example.com",
-  "password":"pass123"
+  "email":"alice2@example.com",
+  "password":"pass12345"
 }
 
 ### Delete requst todulete a user
 DELETE http://localhost:3000/api/v1/users/4
+
+
+
+###POST Login a user
+POST  http://localhost:3000/api/v2/users/auth/cookie/login
+Content-Type: application/json
+
+{
+  "email":"alice@example.com",
+  "password":"pass1234"
+}
+
+### POST Logout a user
+
+POST http://localhost:3000/api/v2/users/auth/cookie/logout
+
+
+### GET check user authentication
+
+GET http://localhost:3000/api/v2/users/auth/cookie/me
