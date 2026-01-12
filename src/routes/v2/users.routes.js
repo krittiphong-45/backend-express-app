@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser2, deleteUser2, getUser2, getUsers2, updateUser2 } from "../../modules/users/users.controller.js";
+import { askUsers2, createUser2, deleteUser2, getUser2, getUsers2, updateUser2 } from "../../modules/users/users.controller.js";
 import { User } from "../../modules/users/users.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -8,16 +8,46 @@ import { authUser } from "../../middlewares/auth.js";
 export const router = Router()
 router.get("/", getUsers2);
 
+//Check user authentication (check if user has valid token)
+router.get("/auth/cookie/me", authUser, async (req, res, next) => {
+  try {
+    const userId = req.user.user._id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(401).json({
+        error: true,
+        message: "Unauthenticated",
+      });
+    }
+
+    res.status(200).json({
+      error: false,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/auth/ai/ask", authUser, askUsers2)
+
 router.get("/:id", getUser2);
 
-router.post("/", authUser, createUser2);
+router.post("/", createUser2);
 
 router.delete("/:id", authUser, deleteUser2);
 
 router.patch("/:id", authUser, updateUser2);
 
 // Login a user -jwt signed token(token in cookie)
-
 router.post("/auth/cookie/login", async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -82,7 +112,6 @@ router.post("/auth/cookie/login", async (req, res, next) => {
 });
 
 //Logout a user
-
 router.post("/auth/cookie/logout", (req, res) => {
   const isProd = process.env.NODE_ENV === "production";
 
@@ -99,32 +128,3 @@ router.post("/auth/cookie/logout", (req, res) => {
   });
 });
 
-//Check user authentication (check if user has valid token)
-
-router.get("/auth/cookie/me", authUser, async (req, res, next) => {
-  try {
-    const userId = req.user.user._id;
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(401).json({
-        error: true,
-        message: "Unauthenticated",
-      });
-    }
-
-    res.status(200).json({
-      error: false,
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-    });
-
-  } catch (error) {
-    next(error);
-  }
-});

@@ -1,38 +1,48 @@
-###get request to read all users
+### GET request to read all users
 GET http://localhost:3000/api/v2/users
 
 
 
-
-### POST
+### POST request to create a new user
 POST http://localhost:3000/api/v2/users
 Content-Type: application/json
 
 {
-  "username":"Alice",
-  "email":"alice2@example.com",
-  "password":"pass12345"
+"username": "ai4",
+"email": "ai4@example.com",
+"password": "12345678",
+"role": "admin"
 }
 
-### Delete requst todulete a user
+### DELETE request to delete a user
 DELETE http://localhost:3000/api/v1/users/4
 
 
 
-###POST Login a user
-POST  http://localhost:3000/api/v2/users/auth/cookie/login
+### POST Login a user 
+POST http://localhost:3000/api/v2/users/auth/cookie/login 
 Content-Type: application/json
 
 {
-  "email":"alice@example.com",
-  "password":"pass1234"
+"email": "ai@example.com", 
+"password": "12345678"
 }
 
-### POST Logout a user
 
+### POST Logout a user 
 POST http://localhost:3000/api/v2/users/auth/cookie/logout
 
 
-### GET check user authentication
 
+### GET check user authentication 
 GET http://localhost:3000/api/v2/users/auth/cookie/me
+
+
+
+### Ask AI 
+POST http://localhost:3000/api/v2/users/auth/ai/ask 
+Content-Type: application/json
+
+{
+"question": "Who are admins?", "topK": 5
+}
